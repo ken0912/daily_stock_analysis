@@ -85,10 +85,25 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL || secrets.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022' }}
 
+          # DeepSeek（独立 Key，不走 OpenAI 兼容层）
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_API_KEYS: ${{ secrets.DEEPSEEK_API_KEYS }}
+
+          # Vision 模型
+          OPENAI_VISION_MODEL: ${{ vars.OPENAI_VISION_MODEL || secrets.OPENAI_VISION_MODEL }}
+          VISION_MODEL: ${{ vars.VISION_MODEL || secrets.VISION_MODEL }}
+
+          # 多渠道 LLM 路由（进阶，与上方单 Key 模式二选一）
+          LLM_CHANNELS: ${{ vars.LLM_CHANNELS || secrets.LLM_CHANNELS }}
+          LLM_TEMPERATURE: ${{ vars.LLM_TEMPERATURE || secrets.LLM_TEMPERATURE }}
+          LITELLM_FALLBACK_MODELS: ${{ vars.LITELLM_FALLBACK_MODELS || secrets.LITELLM_FALLBACK_MODELS }}
+
           # ==========================================
           # 数据源
           # ==========================================
           TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+          TICKFLOW_API_KEY: ${{ secrets.TICKFLOW_API_KEY }}
+          PREFETCH_REALTIME_QUOTES: ${{ vars.PREFETCH_REALTIME_QUOTES || secrets.PREFETCH_REALTIME_QUOTES }}
           
           # ==========================================
           # 搜索服务
@@ -156,6 +171,20 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
 
+          # 通知附加配置
+          PUSHPLUS_TOPIC: ${{ secrets.PUSHPLUS_TOPIC }}
+          WEBHOOK_VERIFY_SSL: ${{ vars.WEBHOOK_VERIFY_SSL || secrets.WEBHOOK_VERIFY_SSL }}
+          MERGE_EMAIL_NOTIFICATION: ${{ vars.MERGE_EMAIL_NOTIFICATION || secrets.MERGE_EMAIL_NOTIFICATION || 'false' }}
+
+          # Markdown 转图片（可选，发 Telegram/企微时渲染为图片）
+          MARKDOWN_TO_IMAGE_CHANNELS: ${{ vars.MARKDOWN_TO_IMAGE_CHANNELS || secrets.MARKDOWN_TO_IMAGE_CHANNELS }}
+          MARKDOWN_TO_IMAGE_MAX_CHARS: ${{ vars.MARKDOWN_TO_IMAGE_MAX_CHARS || secrets.MARKDOWN_TO_IMAGE_MAX_CHARS }}
+          MD2IMG_ENGINE: ${{ vars.MD2IMG_ENGINE || secrets.MD2IMG_ENGINE }}
+
+          # 社交舆情（仅美股，可选）
+          SOCIAL_SENTIMENT_API_KEY: ${{ secrets.SOCIAL_SENTIMENT_API_KEY }}
+          SOCIAL_SENTIMENT_API_URL: ${{ vars.SOCIAL_SENTIMENT_API_URL || secrets.SOCIAL_SENTIMENT_API_URL }}
+
           # ==========================================
           # 自选股配置
           # ==========================================
@@ -163,14 +192,40 @@ jobs:
           MARKET_REVIEW_REGION: ${{ vars.MARKET_REVIEW_REGION || secrets.MARKET_REVIEW_REGION || 'cn' }}
           
           # ==========================================
-          # 运行配置 ⬅️ 新增！
+          # 运行配置
           # ==========================================
+          SCHEDULE_RUN_IMMEDIATELY: ${{ vars.SCHEDULE_RUN_IMMEDIATELY || secrets.SCHEDULE_RUN_IMMEDIATELY }}
+          RUN_IMMEDIATELY: ${{ vars.RUN_IMMEDIATELY || secrets.RUN_IMMEDIATELY }}
           REPORT_TYPE: ${{ vars.REPORT_TYPE || secrets.REPORT_TYPE || 'simple' }}
+          REPORT_LANGUAGE: ${{ vars.REPORT_LANGUAGE || secrets.REPORT_LANGUAGE }}
+          REPORT_SUMMARY_ONLY: ${{ vars.REPORT_SUMMARY_ONLY || secrets.REPORT_SUMMARY_ONLY || 'false' }}
+          REPORT_RENDERER_ENABLED: ${{ vars.REPORT_RENDERER_ENABLED || secrets.REPORT_RENDERER_ENABLED || 'false' }}
+          REPORT_INTEGRITY_ENABLED: ${{ vars.REPORT_INTEGRITY_ENABLED || secrets.REPORT_INTEGRITY_ENABLED || 'true' }}
+          REPORT_INTEGRITY_RETRY: ${{ vars.REPORT_INTEGRITY_RETRY || secrets.REPORT_INTEGRITY_RETRY }}
+          REPORT_HISTORY_COMPARE_N: ${{ vars.REPORT_HISTORY_COMPARE_N || secrets.REPORT_HISTORY_COMPARE_N }}
           SINGLE_STOCK_NOTIFY: ${{ vars.SINGLE_STOCK_NOTIFY || secrets.SINGLE_STOCK_NOTIFY || 'false' }}
           MARKET_REVIEW_ENABLED: ${{ vars.MARKET_REVIEW_ENABLED || secrets.MARKET_REVIEW_ENABLED || 'true' }}
           ANALYSIS_DELAY: ${{ vars.ANALYSIS_DELAY || secrets.ANALYSIS_DELAY || '0' }}
           TRADING_DAY_CHECK_ENABLED: ${{ vars.TRADING_DAY_CHECK_ENABLED || secrets.TRADING_DAY_CHECK_ENABLED || 'true' }}
-          
+          NEWS_STRATEGY_PROFILE: ${{ vars.NEWS_STRATEGY_PROFILE || secrets.NEWS_STRATEGY_PROFILE }}
+          NEWS_MAX_AGE_DAYS: ${{ vars.NEWS_MAX_AGE_DAYS || secrets.NEWS_MAX_AGE_DAYS }}
+          BIAS_THRESHOLD: ${{ vars.BIAS_THRESHOLD || secrets.BIAS_THRESHOLD }}
+
+          # Agent 问股（可选）
+          AGENT_MODE: ${{ vars.AGENT_MODE || secrets.AGENT_MODE || 'false' }}
+          AGENT_LITELLM_MODEL: ${{ vars.AGENT_LITELLM_MODEL || secrets.AGENT_LITELLM_MODEL }}
+          AGENT_SKILLS: ${{ vars.AGENT_SKILLS || secrets.AGENT_SKILLS }}
+          AGENT_MAX_STEPS: ${{ vars.AGENT_MAX_STEPS || secrets.AGENT_MAX_STEPS }}
+          AGENT_SKILL_DIR: ${{ vars.AGENT_SKILL_DIR || secrets.AGENT_SKILL_DIR }}
+
+          # 基本面聚合（可选超时 / 缓存调优）
+          ENABLE_FUNDAMENTAL_PIPELINE: ${{ vars.ENABLE_FUNDAMENTAL_PIPELINE || secrets.ENABLE_FUNDAMENTAL_PIPELINE }}
+          FUNDAMENTAL_STAGE_TIMEOUT_SECONDS: ${{ vars.FUNDAMENTAL_STAGE_TIMEOUT_SECONDS || secrets.FUNDAMENTAL_STAGE_TIMEOUT_SECONDS }}
+          FUNDAMENTAL_FETCH_TIMEOUT_SECONDS: ${{ vars.FUNDAMENTAL_FETCH_TIMEOUT_SECONDS || secrets.FUNDAMENTAL_FETCH_TIMEOUT_SECONDS }}
+          FUNDAMENTAL_RETRY_MAX: ${{ vars.FUNDAMENTAL_RETRY_MAX || secrets.FUNDAMENTAL_RETRY_MAX }}
+          FUNDAMENTAL_CACHE_TTL_SECONDS: ${{ vars.FUNDAMENTAL_CACHE_TTL_SECONDS || secrets.FUNDAMENTAL_CACHE_TTL_SECONDS }}
+          FUNDAMENTAL_CACHE_MAX_ENTRIES: ${{ vars.FUNDAMENTAL_CACHE_MAX_ENTRIES || secrets.FUNDAMENTAL_CACHE_MAX_ENTRIES }}
+
           # ==========================================
           # 系统配置
           # ==========================================
@@ -210,10 +265,13 @@ jobs:
           echo "=========================================="
           echo "【AI 配置】"
           echo "  LiteLLM: $([ -n "$LITELLM_CONFIG" ] || [ -n "$LITELLM_API_KEY" ] || [ -n "$LITELLM_MODEL" ] && echo '✅ 已配置' || echo '❌ 未配置')"
+          echo "  LLM Channels: $([ -n "$LLM_CHANNELS" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  Gemini API Key: $([ -n "$GEMINI_API_KEY" ] && echo '✅ 已配置' || echo '❌ 未配置')"
           echo "  AIHubMix Key:   $([ -n "$AIHUBMIX_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  OpenAI API Key: $([ -n "$OPENAI_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  DeepSeek Key:   $([ -n "$DEEPSEEK_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  Anthropic Key:  $([ -n "$ANTHROPIC_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  Agent Mode:     $AGENT_MODE"
           echo ""
           echo "【搜索引擎】"
           echo "  Bocha API Keys: $([ -n "$BOCHA_API_KEYS" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
@@ -242,6 +300,8 @@ jobs:
           echo "  Discord: $([ -n "$DISCORD_WEBHOOK_URL" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  AstrBot: $([ -n "$ASTRBOT_URL" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  Slack: $(([ -n "$SLACK_WEBHOOK_URL" ] || ([ -n "$SLACK_BOT_TOKEN" ] && [ -n "$SLACK_CHANNEL_ID" ])) && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  社交舆情(Social Sentiment): $([ -n "$SOCIAL_SENTIMENT_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置（仅美股）')"
+          echo "  TickFlow: $([ -n "$TICKFLOW_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "=========================================="
           echo ""
           
