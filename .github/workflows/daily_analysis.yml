@@ -32,7 +32,8 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     # 添加超时限制，防止任务卡死
-    timeout-minutes: 30
+    # 60 分钟：首次运行 pip install（全量依赖无缓存）+ 多只股票分析
+    timeout-minutes: 60
     
     steps:
       - name: 随机延迟（避免固定时间访问）
@@ -46,11 +47,22 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+          cache-dependency-path: requirements.txt
       
       - name: 安装依赖
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          for attempt in 1 2 3; do
+            if pip install -r requirements.txt; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "依赖安装失败，已重试 3 次" >&2
+              exit 1
+            fi
+            echo "依赖安装第 ${attempt} 次失败，15 秒后重试..." >&2
+            sleep 15
+          done
       
       - name: 创建必要目录
         run: |
