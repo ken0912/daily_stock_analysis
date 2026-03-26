@@ -272,6 +272,39 @@ python main.py --market-only
 
 ---
 
+---
+
+### Q17: What is GitHub Actions? Why is it recommended for deploying this project?
+
+**What is GitHub Actions**:
+
+GitHub Actions is GitHub's built-in **CI/CD automation platform**. You write workflow files in YAML format (stored in `.github/workflows/`), and GitHub provides free cloud runners that execute your scripts automatically on a schedule or when triggered by events.
+
+**How this project uses it**:
+
+| Workflow | Purpose | Trigger |
+|----------|---------|---------|
+| `daily_analysis.yml` | Runs daily stock analysis and sends notifications | Auto at 18:00 Beijing time (Mon–Fri), or manually |
+| `ci.yml` | Code quality checks (syntax, style, AI governance) | On every pull request |
+| `auto-tag.yml` | Automatic semantic versioning | On commits with `#patch` / `#minor` / `#major` |
+
+**Why GitHub Actions is recommended for this project**:
+
+1. **Zero cost**: Public repositories get generous free minutes each month — personal usage rarely exceeds the quota
+2. **No server required**: Analysis runs entirely on GitHub's cloud infrastructure, so you don't need a VPS
+3. **Easy setup**: Fork the repo, add Secrets, and you're running in under 5 minutes
+4. **Fully automated**: Scheduled runs happen automatically and push results to WeChat Work / Feishu / Telegram / etc.
+
+**Quick start**:
+
+1. Fork this repository
+2. Go to `Settings → Secrets and variables → Actions` and add your AI API key and notification channel credentials
+3. Open `Actions → Daily Stock Analysis` and trigger a manual run to verify your configuration
+
+> For detailed steps see [README Quick Start](../README.md) and [Full Configuration Guide](full-guide_EN.md)
+
+---
+
 ## Still Have Questions?
 
 If the above content doesn't solve your issue, welcome to:
@@ -281,4 +314,4 @@ If the above content doesn't solve your issue, welcome to:
 
 ---
 
-*Last updated: 2026-02-01*
+*Last updated: 2026-03-26*
