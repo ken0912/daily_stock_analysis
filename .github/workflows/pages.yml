@@ -1,0 +1,68 @@
+name: 部署 Web 前端到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/dsa-web/**'
+  # 手动触发，方便首次部署或强制刷新
+  workflow_dispatch:
+
+# 允许写入 GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一个 Pages 部署，新提交会排队而非取消
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 🏗️ 构建前端
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v5
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/dsa-web/package-lock.json
+
+      - name: 安装依赖
+        working-directory: apps/dsa-web
+        run: npm ci
+
+      - name: 构建 Web 前端
+        working-directory: apps/dsa-web
+        # --base 确保静态资源使用正确的子路径 /daily_stock_analysis/
+        # --outDir 覆盖 vite.config.ts 中的 ../../static，输出到 apps/dsa-web/dist
+        #   注意：该覆盖仅在此 CI 步骤生效，本地开发 / Docker 构建不受影响：
+        #   本地直接运行 `npm run build` 仍会输出到 ../../static（供 FastAPI 托管）。
+        # VITE_API_URL：若在仓库 Variables 中配置了后端地址，前端将连接该后端；
+        #               若未配置，保持同源请求（适合本地或同机部署场景）。
+        run: npm run build -- --outDir dist --base /daily_stock_analysis/
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL || '' }}
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/dsa-web/dist
+
+  deploy:
+    name: 🚀 发布到 GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
