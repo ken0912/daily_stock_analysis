@@ -316,6 +316,39 @@ python main.py --market-only
 
 ---
 
+---
+
+### Q18: GitHub Actions 是什么？为什么推荐它来部署本项目？
+
+**GitHub Actions 简介**：
+
+GitHub Actions 是 GitHub 内置的 **CI/CD 自动化平台**。你可以在仓库里编写 YAML 格式的工作流文件（存放于 `.github/workflows/`），由 GitHub 免费提供云端运行环境（runner），在指定的时间或事件触发时自动执行脚本。
+
+**本项目如何使用它**：
+
+| 工作流 | 功能 | 触发方式 |
+|--------|------|----------|
+| `daily_analysis.yml` | 每日定时运行股票分析并推送通知 | 北京时间 18:00 自动触发，或手动触发 |
+| `ci.yml` | 代码质量检查（语法、格式、AI 治理） | 提交 PR 时触发 |
+| `auto-tag.yml` | 自动版本号管理 | 合入含 `#patch` / `#minor` / `#major` 的提交时触发 |
+
+**为什么推荐用 GitHub Actions 部署本项目**：
+
+1. **零成本**：公开仓库每月有大量免费额度，个人使用基本不会超出
+2. **无需服务器**：分析任务完全在 GitHub 云端执行，不需要自己租 VPS
+3. **配置简单**：只需 Fork 仓库、填入 Secrets，5 分钟即可完成部署
+4. **全自动**：定时任务自动运行，结果直接推送到企业微信/飞书/Telegram 等渠道
+
+**快速上手**：
+
+1. Fork 本仓库
+2. 进入 `Settings → Secrets and variables → Actions`，配置 AI Key 和通知渠道
+3. 进入 `Actions → 每日股票分析`，手动触发一次验证配置
+
+> 详细步骤见 [README 快速开始](../README.md#-快速开始) 和 [完整配置指南](full-guide.md#github-actions-详细配置)
+
+---
+
 ## 💬 还有问题？
 
 如果以上内容没有解决你的问题，欢迎：
@@ -325,4 +358,4 @@ python main.py --market-only
 
 ---
 
-*最后更新：2026-02-28*
+*最后更新：2026-03-26*
